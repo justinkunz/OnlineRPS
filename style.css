@@ -1,0 +1,25 @@
+.imgs {
+    width:200px;
+    height:200px;
+}
+.imagesCont {
+    text-align:center;
+    background-color:rgb(230, 220, 220);
+    color: rgb(19, 14, 14);
+    margin: 10%;
+    font-size: 24px;
+    /* opacity: 0.8; */
+}
+body {
+    background-image: url(images/background.png);
+    font-family: 'Raleway', sans-serif;
+}
+#titleTop,
+#titleTop2 {
+    text-align:center;
+    font-size: 56px;
+    color:rgb(230, 220, 220);
+}
+#titleTop2 {
+    font-size:16px;
+}
