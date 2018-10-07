@@ -1,23 +1,19 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>Rock Paper Scissors</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <script src="main.js"></script>
+    <link rel="shortcut icon" type="image/png" href="images/favicon.png"/>
 </head>
-
 <body>
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase.js"></script>
+    <script src="javascript/logic.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Poppins|Raleway" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
     <div id='titleTop'>Online Rock Paper Scissors</div>
     <div id='titleTop2'>Connect with strangers for a round of rock paper scissors</div>
@@ -26,9 +22,7 @@
         <img class='imgs choices' value='rock' src='images/rock.png'>
         <img class='imgs choices' value='paper' src='images/paper.png'>
         <img class='imgs choices' value='scissors' src='images/scissors.png'>
-
     </div>
-    
     <div id="modal1" class="modal">
         <div class="modal-content">
             <h4 id='modalTop'></h4>
@@ -53,160 +47,10 @@
             <a id="modalBtn" class="modal-close waves-effect waves-green btn-flat"></a>
         </div>
     </div>
-    <script>
-        // Initialize Firebase
-        var config = {
-            apiKey: "AIzaSyC1pmT8nzU706K4Pgs_ZDxvlgajPTbLd-g",
-            authDomain: "rpsgame-50775.firebaseapp.com",
-            databaseURL: "https://rpsgame-50775.firebaseio.com",
-            projectId: "rpsgame-50775",
-            storageBucket: "rpsgame-50775.appspot.com",
-            messagingSenderId: "437476549334"
-        };
-        firebase.initializeApp(config);
-        database = firebase.database();
-
-
-        function callModal() {
-            //open modal
-            $('.modal').modal();
-            $('#modal1').modal('open');
-            $('.trigger-modal').modal();
-        }
-        $(document).on('click', '.quit', function(){
-
-            //empty modal contents on close
-            console.log('quit function called')
-            $("#modalLine1").empty()
-            $("#modalLine2").empty()
-            $("#modalTop").empty()
-            console.log('calling reset')
-            reset()
-        });
-        $(document).on('click', '.playA', function(){
-            console.log('playA function called')
-            $("#modalLine1").empty()
-            $("#modalLine2").empty()
-            $("#modalTop").empty()
-            $("#modalBtn").removeClass('playA')
-        });
-
-        //who are you variable is used to define your character as player 1 or player 2
-        var whoAreYou
-        var choice
-        //when a choice (rock, paper, or scissors) is clicked
-        $('.choices').on('click', function () {
-
-            //store the value of the choice
-            choice = $(this).attr('value')
-            //if player 1 space is database is empty declare user as player 1
-            if (p1 === 'empty') {
-                //push 
-                database.ref().update({
-                    player1: choice
-                })
-                whoAreYou = 'Player1'
-                $("#modalTop").text("Waiting on Opponent")
-                $("#loader").addClass("active")
-                $("#modalBtn").addClass('quit')
-                $("#modalBtn").text("Quit Waiting")
-                callModal()
-            }
-            else {
-                console.log('p2 selected')
-                database.ref().update({
-                    player2: choice
-                })
-                whoAreYou = 'Player2'
-                makeDecision()
-            }
-            console.log('way: ' + whoAreYou)
-        });
-
-        database.ref().on("value", function (snapshot) {
-            p1 = snapshot.val().player1
-            p2 = snapshot.val().player2
-            console.log(p1)
-            console.log(p2)
-            console.log('choice is ' + choice)
-            if (p1 !== 'empty') {
-                if (p2 !== 'empty' && choice !== undefined) {
-                    console.log(p1)
-                    console.log(p2)
-                    makeDecision()
-                }
-            }
-        });
-
-        function makeDecision() {
-            console.log('md function called')
-            $("#loader").removeClass("active")
-            $("#modalBtn").text("Play Again")
-            $("#modalBtn").removeClass('quit')
-            $("#modalBtn").addClass('playA')
-            if (whoAreYou === 'Player1') {
-                if (whoWon(p1, p2) === 'p1') {
-                    $("#modalTop").text("You won!")
-                }
-                if (whoWon(p1, p2) === 'p2') {
-                    $("#modalTop").text("You lost!")
-                }
-                if (whoWon(p1, p2) === 'Tied') {
-                    $("#modalTop").text("You tied!")
-                }
-                $("#modalLine1").text('You choose ' + p1)
-                $("#modalLine2").text('Your opponent choose ' + p2)
-                callModal()
-            }
-            if (whoAreYou === 'Player2') {
-                if (whoWon(p1, p2) === 'p1') {
-                    $("#modalTop").text("You lost!")
-                }
-                if (whoWon(p1, p2) === 'p2') {
-                    $("#modalTop").text("You won!")
-                }
-                if (whoWon(p1, p2) === 'Tied') {
-                    $("#modalTop").text("You tied!")
-                }
-                $("#modalLine1").text('You choose ' + p2)
-                $("#modalLine2").text('Your opponent choose ' + p1)
-                callModal()
-            }
-            setTimeout(reset, 1000)
-        }
-        function whoWon(p1, p2) {
-            if (p1 === p2) {
-                return "Tied"
-            }
-            if (p1 === 'rock' && p2 === 'paper') {
-                return "p2"
-            }
-            if (p1 === 'rock' && p2 === 'scissors') {
-                return 'p1'
-            }
-            if (p1 === 'paper' && p2 === 'rock') {
-                return 'p1'
-            }
-            if (p1 === 'paper' && p2 === 'scissors') {
-                return 'p2'
-            }
-            if (p1 === 'scissors' && p2 === 'rock') {
-                return 'p2'
-            }
-            if (p1 === 'scissors' && p2 === 'paper') {
-                return 'p1'
-            }
-        }
-
-        function reset() {
-            database.ref().set({
-                player1: 'empty',
-                player2: 'empty'
-            })
-            whoAreYou = ''
-        }
-
-    </script>
+    <script src="javascript/logic.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
 
 </html>

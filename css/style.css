@@ -8,10 +8,9 @@
     color: rgb(19, 14, 14);
     margin: 10%;
     font-size: 24px;
-    /* opacity: 0.8; */
 }
 body {
-    background-image: url(images/background.png);
+   background-image: url('../images/background.png');
     font-family: 'Raleway', sans-serif;
 }
 #titleTop,
@@ -22,4 +21,12 @@ body {
 }
 #titleTop2 {
     font-size:16px;
+}
+.redAlert {
+    color: rgb(142, 25, 25);
+}
+.imgs:hover {
+    border-color: rgb(115, 232, 238);
+    border-style: solid;
+    border-radius:25px;
 }
